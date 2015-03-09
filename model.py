@@ -20,10 +20,8 @@ class Car:
     def __init__(self, coords=None,
                  direction=None, velocity=0,
                  acceleration=0, behaviour=()):
-        if coords:
-            self.coords = list(coords)
-        if direction:
-            self.direction = list(direction)
+        self.coords = list(coords) if coords else [0]
+        self.direction = list(direction) if direction else [1]
         self.velocity = velocity
         self.acceleration = acceleration
         self.behaviour = tuple(behaviour)
