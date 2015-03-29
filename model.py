@@ -1,17 +1,23 @@
 # -*- coding: utf-8 -*-
+"""
+Модель машины с функциями ее поведения.
+"""
 
 # вычисление комфортной дистанции: расстояние, которое при текущей скорости
 # проезжает машина за 2 секунды
 comfort_distance = lambda x: 2*x
 
+MAX_ALLOWED_VELOCITY = 100 / 3.6
+CARS = []
 
-MAX_ALLOWED_VELOCITY = 60 / 3.6
 
 class Car:
+    # идентификатор машины
+    id = 0
     # координаты
-    coords = []
+    coords = None
     # направление, вектор единичной длины
-    direction = []
+    direction = None
     # скорость, м/c
     velocity = 0
     # ускорение, м/c^2
@@ -20,11 +26,11 @@ class Car:
     # того или иного действия
     behaviour = ()
 
-    def __init__(self, coords=None,
-                 direction=None, velocity=0,
+    def __init__(self, id=0, coords=(0, 0), direction=(1, 0), velocity=0,
                  acceleration=0, behaviour=()):
-        self.coords = list(coords) if coords else [0]
-        self.direction = list(direction) if direction else [1]
+        self.id = id
+        self.coords = list(coords)
+        self.direction = list(direction)
         self.velocity = velocity
         self.acceleration = acceleration
         self.behaviour = tuple(behaviour)
@@ -53,40 +59,57 @@ class Car:
         """
         if self.velocity < MAX_ALLOWED_VELOCITY:
             if self.velocity < 14:
-                self.acceleration += 3
+                self.acceleration = 3
             else:
-                self.acceleration += 2
+                self.acceleration = 2
         else:
-            self.acceleration = (self.velocity - MAX_ALLOWED_VELOCITY) / 2
+            self.acceleration = -(self.velocity - MAX_ALLOWED_VELOCITY) / 2
         # рандомное изменение в предалах от -1 до 1
 
     def change_coords(self, dt):
+        """
+        Изменение координат машины за время dt секунд при текущих ускорении
+        и скорости. Вычисляется по формулe S = V*T+A*T^2/2
+        """
         delta_c = self.velocity * dt + self.acceleration * (dt ** 2) / 2
         n = len(self.coords)
         for i in range(n):
             self.coords[i] += delta_c*self.direction[i]
 
     def change_velocity(self, delta_t):
+        """
+        Изменение скорости машины за время dt секунд.
+        Вычисляется по формуле V = V_0 + A*T
+        """
         self.velocity += self.acceleration * delta_t
         if self.velocity < 0:
             self.velocity = 0
 
-def find_nearest(cars, car):
-    """
-    Ищем ближайшую машину по направлению движения
+    def __str__(self):
+        return "Car: coords {0}".format(self.coords)
 
-    :param cars:
-    :param car:
-    :return:
+
+def find_nearest(car):
     """
-    if not cars:
+    Для машин движущихся по многополосной дороге ищем ближайшую машину по
+    направлению движения.
+
+    Сначала сортируем по первой координате, а потом ищем следующую машину,
+    у которой совпадает вторая координата.
+
+    :param cars: массив машин
+    :param car: машина, для которой ищем ближайшую
+    :return: ближайшую машину или None, если такой есть
+    """
+    if not CARS:
         return None
+    CARS.sort(key=lambda x: x.coords[0])
+    for i, c in enumerate(CARS):
+        if c.id == car.id:
+            break
 
-    # сортируем список машин по координате
-    # ищем положение нашей машины в массиве
-    # берем следующую машину
-    # если ее нет, то возвращаем None
-
-    return None
-
-
+    nearest = None
+    for j in xrange(i+1, len(CARS)):
+        if CARS[j].coords[1] == car.coords[1]:
+            nearest = CARS[j]
+    return nearest
