@@ -1,25 +1,40 @@
 import csv
 from model import Car
+import model
 
 
-car = Car(velocity=0, acceleration = 0)
-
-with open('result.csv', 'wb') as csvfile:
-    datawriter = csv.writer(csvfile)
-    datawriter.writerow([u'time', u'velocity'])
-
-    for i in xrange(100):
-        car.change_coords(1)
-        car.change_velocity(1)
-        car.change_acceleration()
-        datawriter.writerow([i, car.velocity])
+time = 180
+distance = 1000
 
 
-cars = []
-for i in xrange(10):
-    car = Car(coords=[i])
-    print car
-    cars.append(car)
+def experiment():
+    cars = [Car(id=i, coords=[0-2.5*i, 0], behaviour={'random': 2})
+            for i in xrange(500)]
+    t = -1
+    gone = {}
 
+    while True:
+        for car in cars:
+            car.update_state(1, cars, False)
 
-print cars
+        for car in cars:
+            car.fill_state()
+            if car.coords[0] >= distance:
+                gone[car.id] = 1
+
+                if len(gone) == 1:
+                    print car
+                    t = 0
+            #print car
+
+        if t >= 0:
+            t += 1
+        if t == time:
+            break
+
+    return len(gone)
+
+for x in range(20, 145, 5):
+    model.MAX_ALLOWED_VELOCITY = x/3.6
+    l = experiment()
+    print x, l
