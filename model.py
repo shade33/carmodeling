@@ -123,7 +123,6 @@ def distance(car_1, car_2):
     res = 0
     for i in xrange(dim):
         res += (car_1.coords[i] - car_2.coords[i])**2
-        res += (car_1.coords[i] - car_2.coords[i])**2
     return sqrt(res)
 
 

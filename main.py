@@ -4,12 +4,12 @@ import model
 
 
 time = 180
-distance = 1000
+distance = 2000
 
 
 def experiment():
-    cars = [Car(id=i, coords=[0-2.5*i, 0], behaviour={'random': 2})
-            for i in xrange(500)]
+    cars = [Car(id=i, coords=[0-2.5*i, 0], behaviour={'random': 0})
+            for i in xrange(80)]
     t = -1
     gone = {}
 
@@ -23,7 +23,7 @@ def experiment():
                 gone[car.id] = 1
 
                 if len(gone) == 1:
-                    print car
+                    #print car
                     t = 0
             #print car
 
@@ -34,7 +34,7 @@ def experiment():
 
     return len(gone)
 
-for x in range(20, 145, 5):
+for x in range(10, 145, 5):
     model.MAX_ALLOWED_VELOCITY = x/3.6
     l = experiment()
     print x, l

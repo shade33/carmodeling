@@ -62,19 +62,19 @@ class MyTestCase(unittest.TestCase):
 
     def test_change_acceleration_double(self):
         car_1 = Car(acceleration=0, velocity=20, coords=[100, 0], id=1)
-        car_2 = Car(acceleration=0, velocity=30, coords=[150, 0], id=2)
+        car_2 = Car(acceleration=0, velocity=15, coords=[120, 0], id=2)
         cars = [car_1, car_2]
-        model.MAX_ALLOWED_VELOCITY = 70
+        model.MAX_ALLOWED_VELOCITY = 23
         for car in cars:
             car.update_state(1, cars, False)
         for car in cars:
             car.fill_state()
-        self.assertEqual(car_1.acceleration, 2)
+        self.assertEqual(car_1.acceleration, -9)
 
-        car_1 = Car(acceleration=0, velocity=30, coords=[100, 0], id=1)
-        car_2 = Car(acceleration=0, velocity=20, coords=[150, 0], id=2)
+        car_1 = Car(acceleration=4, velocity=15, coords=[0, 0], id=1)
+        car_2 = Car(acceleration=0, velocity=10, coords=[20, 0], id=2)
         cars = [car_1, car_2]
-        model.MAX_ALLOWED_VELOCITY = 24
+        model.MAX_ALLOWED_VELOCITY = 20
 
         for car in cars:
             car.update_state(1, cars, False)
@@ -82,28 +82,7 @@ class MyTestCase(unittest.TestCase):
         for car in cars:
             car.fill_state()
 
-        self.assertEqual(car_1.acceleration, -3)
-
-        car_1 = Car(acceleration=0, velocity=10, coords=[100, 0], id=1)
-        car_2 = Car(acceleration=0, velocity=15, coords=[140, 0], id=2)
-        cars = [car_1, car_2]
-        model.MAX_ALLOWED_VELOCITY = 70
-        for car in cars:
-            car.update_state(1, cars, False)
-        for car in cars:
-            car.fill_state()
-        self.assertEqual(car_1.acceleration, 3)
-
-
-        car_1 = Car(acceleration=0, velocity=30, coords=[80, 0], id=1)
-        car_2 = Car(acceleration=0, velocity=25, coords=[120, 0], id=2)
-        cars = [car_1, car_2]
-        model.MAX_ALLOWED_VELOCITY = 70
-        for car in cars:
-            car.update_state(1, cars, False)
-        for car in cars:
-            car.fill_state()
-        self.assertEqual(car_1.acceleration, -10)
+        self.assertEqual(car_1.acceleration, -4)
 
     def test_find_nearest(self):
         """
